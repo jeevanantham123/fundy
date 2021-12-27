@@ -1,17 +1,36 @@
-import { Heading } from "@chakra-ui/react";
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import { Box, Center } from "@chakra-ui/react";
+import { Auth, Typography, Button } from "@supabase/ui";
+import supabase from "../utils/supabaseClient";
 
-const Home: NextPage = () => {
-  return (
-    <>
-      <div className="font-bold text-red-900">Hello World</div>
-      <Heading>Hello world</Heading>
-      <div className="text-2xl">Welcome to fundy</div>
-    </>
-  );
+const Container = (props: any) => {
+  const { user } = Auth.useUser();
+  if (user)
+    return (
+      <>
+        <Typography.Text>Signed in: {user.email}</Typography.Text>
+        <Button block onClick={() => props.supabaseClient.auth.signOut()}>
+          Sign out
+        </Button>
+      </>
+    );
+  return props.children;
 };
 
-export default Home;
+export default function AuthBasic() {
+  return (
+    <Center className="min-h-full">
+      <Box>
+        <Auth.UserContextProvider supabaseClient={supabase}>
+          <Container supabaseClient={supabase}>
+            <Auth
+              supabaseClient={supabase}
+              providers={["google"]}
+              socialColors={true}
+              view="sign_in"
+            />
+          </Container>
+        </Auth.UserContextProvider>
+      </Box>
+    </Center>
+  );
+}
