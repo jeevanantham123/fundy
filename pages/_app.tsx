@@ -15,7 +15,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       setauth(true);
     };
     useEffect(() => {
-      console.log(user);
       if (user) {
         setauth(false);
       }

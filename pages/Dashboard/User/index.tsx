@@ -1,11 +1,15 @@
-import { Auth } from "@supabase/ui";
 import { FunctionComponent } from "react";
+import UserPageComponent from "../../../components/Dashboard/UserPage";
+import UserPageProvider from "../../../components/Dashboard/UserPage/Context";
 
 interface UserPageProps {}
 
 const UserPage: FunctionComponent<UserPageProps> = () => {
-  const { user } = Auth.useUser();
-  return <h1>Hello User page {user?.email}</h1>;
+  return (
+    <UserPageProvider>
+      <UserPageComponent />
+    </UserPageProvider>
+  );
 };
 
 export default UserPage;
