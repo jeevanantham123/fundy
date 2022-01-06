@@ -1,9 +1,15 @@
-import React from "react";
+import { FunctionComponent } from "react";
+import HomePageComponent from "../components/Dashboard/HomePage";
+import HomePageProvider from "../components/Dashboard/HomePage/Context";
 
-export default function index() {
+interface HomePageProps {}
+
+const HomePage: FunctionComponent<HomePageProps> = () => {
   return (
-    <div>
-      <h1>Hello world</h1>
-    </div>
+    <HomePageProvider>
+      <HomePageComponent />
+    </HomePageProvider>
   );
-}
+};
+
+export default HomePage;

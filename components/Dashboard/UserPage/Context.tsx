@@ -9,8 +9,7 @@ export const UserPageContext = React.createContext({} as IContextProps);
 
 function useUserPagesInfo() {
   const [responseData, setResponseData] = useState({
-    userDetails: { data: {} },
-    statusCode: "",
+    userDetails: { data: {}, statusCode: "" },
   });
 
   async function fetchUserDetails() {

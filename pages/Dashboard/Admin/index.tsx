@@ -1,11 +1,15 @@
-import { Auth } from "@supabase/ui";
 import { FunctionComponent } from "react";
+import AdminPageComponent from "../../../components/Dashboard/AdminPage";
+import AdminPageProvider from "../../../components/Dashboard/AdminPage/Context";
 
-interface AdminpageProps {}
+interface AdminPageProps {}
 
-const Adminpage: FunctionComponent<AdminpageProps> = () => {
-  const { user } = Auth.useUser();
-  return <h1>Hello Admin page {user?.email}</h1>;
+const AdminPage: FunctionComponent<AdminPageProps> = () => {
+  return (
+    <AdminPageProvider>
+      <AdminPageComponent />
+    </AdminPageProvider>
+  );
 };
 
-export default Adminpage;
+export default AdminPage;
