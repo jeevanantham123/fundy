@@ -37,6 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     supabaseClient={supabase}
                     providers={["google"]}
                     socialColors={true}
+                    onlyThirdPartyProviders={true}
                   />
                 </Box>
               </Center>
