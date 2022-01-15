@@ -5,31 +5,36 @@ interface IContextProps {
   responseData: any;
   fetchDetails: () => void;
 }
+
+interface IResponseProps {
+  FundsData: any[];
+}
+
 export const HomePageContext = React.createContext({} as IContextProps);
 
 function useHomePagesInfo() {
-  const [responseData, setResponseData] = useState({
-    Details: { data: {}, statusCode: "" },
+  const [responseData, setResponseData] = useState<IResponseProps>({
+    FundsData: [],
   });
 
   async function fetchDetails() {
-    const res = await getDetails();
+    const { data, error } = await supabase
+      .from("fundraisers")
+      .select(
+        "details,id,fundType:fund_type(type),user:profiles(location,email,username,avatar_url)"
+      );
     let temp = responseData;
-    temp.Details.data = res;
-    setResponseData(() => {
-      return { ...temp };
-    });
+    temp.FundsData = data ?? [];
+    if (!error)
+      setResponseData(() => {
+        return { ...temp };
+      });
   }
 
   return {
     responseData,
     fetchDetails,
   };
-}
-export async function getDetails() {
-  const token = fetchToken();
-  const { data, error } = await supabase.auth.api.getUser(token);
-  return { data };
 }
 
 function HomePageProvider(props: any) {

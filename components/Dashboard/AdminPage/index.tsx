@@ -8,7 +8,7 @@ const AdminPageComponent: FunctionComponent<AdminPageComponentProps> = () => {
   const { user } = Auth.useUser();
   // const { responseData } = useContext(AdminPageContext);
 
-  return <h2>{user?.email}</h2>;
+  return <h2>{"404 not found"}</h2>;
 };
 
 export default AdminPageComponent;
