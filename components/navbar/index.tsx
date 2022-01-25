@@ -17,12 +17,12 @@ interface NavbarWrapperProps {
 }
 
 const NavbarWrapper: FunctionComponent<NavbarWrapperProps> = (props) => {
-  const Links = ["HomePage", "User", "Admin", "Raise"];
+  const Links = ["Explore", "User", "Admin", "Create"];
   const hrefs: any = {
-    HomePage: "/",
+    Explore: "/",
     User: "/Dashboard/User",
     Admin: "/Dashboard/Admin",
-    Raise: "/Dashboard/Raise",
+    Create: "/Dashboard/Raise",
   };
 
   const NavLink = (props: any) => {

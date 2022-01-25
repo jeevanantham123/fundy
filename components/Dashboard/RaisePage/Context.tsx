@@ -50,28 +50,29 @@ function useRaisePageInfo() {
       });
   }
   async function saveFundDetails(reqData: any) {
-    const { authId, details, location, type } = reqData;
+    const { authId, details, location, type, image } = reqData;
     let errorRes = null;
     let temp = responseData;
     if (authId !== null) {
-      const { data, error } = await supabase.from("fundraisers").insert({
-        type: type,
-        details: details,
-        profile_id: authId,
-      });
-      if (error) errorRes = error;
-      // console.log(data, error, "if1");
+      const Imagedata: any = await supabase.storage
+        .from("cover-images")
+        .upload(`public/${Date.now()}` + `${image.name}`, image);
+      if (!Imagedata?.error) {
+        const fundraisers = await supabase.from("fundraisers").insert({
+          type: type,
+          details: details,
+          profile_id: authId,
+          cover_image: Imagedata?.data?.Key,
+        });
+        if (fundraisers?.error) errorRes = fundraisers?.error;
+        const profiles = await supabase.from("profiles").upsert({
+          id: authId,
+          location: location,
+        });
+        if (profiles?.error) errorRes = profiles?.error;
+      }
+      if (Imagedata?.error) errorRes = Imagedata?.error;
     }
-
-    if (authId !== null) {
-      const { data, error } = await supabase.from("profiles").upsert({
-        id: authId,
-        location: location,
-      });
-      if (error) errorRes = error;
-      console.log(data, error, "if2");
-    }
-
     if (!errorRes) {
       temp.statusCode = "200";
       setResponseData(() => {

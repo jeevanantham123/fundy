@@ -7,7 +7,7 @@ interface FundCardProps {
 }
 
 const FundCard: FunctionComponent<FundCardProps> = ({ fundData }) => {
-  const { details, user, fundType } = fundData;
+  const { details, user, fundType, cover_image } = fundData;
   const colorSchemes: any = {
     "Software/Application/Project": "blue.300",
     "Medical/Health": "red.300",
@@ -23,11 +23,18 @@ const FundCard: FunctionComponent<FundCardProps> = ({ fundData }) => {
       flexDir="column"
       borderRadius="md"
     >
+      {cover_image && (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_SUPABASE_STORAGE_URL}${cover_image}`}
+          alt="cover"
+          className="object-contain h-[150px]"
+        />
+      )}
       <Box
         bg={colorSchemes[fundType?.type]}
         w="full"
         p="10px"
-        className="rounded-t-md"
+        className={cover_image ? "" : "rounded-t-md"}
       >
         {details}
       </Box>

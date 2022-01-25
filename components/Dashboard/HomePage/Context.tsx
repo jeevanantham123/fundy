@@ -21,7 +21,7 @@ function useHomePagesInfo() {
     const { data, error } = await supabase
       .from("fundraisers")
       .select(
-        "details,id,fundType:fund_type(type),user:profiles(location,email,username,avatar_url)"
+        "details,id,fundType:fund_type(type),user:profiles(location,email,username,avatar_url),cover_image"
       );
     let temp = responseData;
     temp.FundsData = data ?? [];

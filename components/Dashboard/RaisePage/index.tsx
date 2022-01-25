@@ -8,6 +8,7 @@ import {
   TabPanels,
   TabPanel,
   Text,
+  Box,
   Select,
   Center,
   MenuButton,
@@ -20,15 +21,17 @@ import {
   AlertIcon,
   Alert,
   useToast,
+  Image,
 } from "@chakra-ui/react";
 import { RaisePageContext } from "./Context";
 import {
   ArrowForwardIcon,
   CheckCircleIcon,
   ChevronDownIcon,
+  CloseIcon,
 } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
-
+// import Image from "next/image";
 interface RaisePageComponentProps {}
 
 const RaisePageComponent: FunctionComponent<RaisePageComponentProps> = () => {
@@ -46,6 +49,7 @@ const RaisePageComponent: FunctionComponent<RaisePageComponentProps> = () => {
   const [fundData, setfundData] = useState({
     details: "",
     location: "",
+    image: null,
   });
   const FundTypes = responseData?.FundType?.data;
 
@@ -55,25 +59,38 @@ const RaisePageComponent: FunctionComponent<RaisePageComponentProps> = () => {
   }, []);
 
   const handleSubmit = async () => {
-    const reqObj = {
-      authId: user?.id,
-      details: fundData?.details,
-      location: fundData?.location,
-      type: SelectedFundType?.id,
-    };
-    // console.log("REQ", reqObj);
-    await saveFundDetails(reqObj);
-    if (responseData?.statusCode === "200") {
-      toast({
-        title: `Added successfully!`,
-        status: "success",
-        isClosable: true,
-        position: "top-right",
-      });
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
+    if (
+      fundData?.details !== "" &&
+      SelectedFundType?.id !== null &&
+      fundData?.location !== "" &&
+      fundData?.image !== null
+    ) {
+      const reqObj = {
+        authId: user?.id,
+        details: fundData?.details,
+        location: fundData?.location,
+        type: SelectedFundType?.id,
+        image: fundData?.image,
+      };
+      console.log("REQ", reqObj);
+      await saveFundDetails(reqObj);
+      if (responseData?.statusCode === "200") {
+        toast({
+          title: `Added successfully!`,
+          status: "success",
+          isClosable: true,
+          position: "top-right",
+        });
+        setTimeout(() => {
+          router.push("/");
+        }, 2000);
+      }
     }
+  };
+
+  const handleImageChange = (e: any) => {
+    setfundData({ ...fundData, image: e.target.files[0] });
+    console.log("Image", e.target.files[0].name);
   };
 
   return (
@@ -150,20 +167,63 @@ const RaisePageComponent: FunctionComponent<RaisePageComponentProps> = () => {
             </Button>
           </TabPanel>
           <TabPanel>
-            <FormControl>
-              <FormLabel fontSize="18px" htmlFor="country" textAlign="center">
-                Explain Your Purpose (or) Idea
-              </FormLabel>
-              <Textarea
-                placeholder="Type here"
-                size="md"
-                colorScheme="teal"
-                value={fundData?.details}
-                onChange={(e) =>
-                  setfundData({ ...fundData, details: e.target.value })
-                }
-              />
-            </FormControl>
+            <>
+              <FormControl>
+                <FormLabel fontSize="18px" htmlFor="country" textAlign="center">
+                  Explain Your Purpose (or) Idea
+                </FormLabel>
+                <Textarea
+                  placeholder="Type here"
+                  size="md"
+                  colorScheme="teal"
+                  value={fundData?.details}
+                  onChange={(e) =>
+                    setfundData({ ...fundData, details: e.target.value })
+                  }
+                />
+              </FormControl>
+              <div className="page">
+                {fundData?.image ? (
+                  <>
+                    <Text className="font-medium text-[18px] mb-5">
+                      Preview Image
+                    </Text>
+                    <div className="relative border rounded-md">
+                      <Center
+                        className="absolute -top-5 w-8 h-8 -right-5 bg-red-600 rounded-full cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          URL.revokeObjectURL(fundData?.image ?? "");
+                          setfundData({ ...fundData, image: null });
+                        }}
+                      >
+                        <CloseIcon color="white" boxSize="13px" />
+                      </Center>
+                      <Image
+                        src={URL.createObjectURL(fundData?.image)}
+                        alt=""
+                        className="rounded-md object-contain"
+                        width={{ base: "320px", md: "400px" }}
+                        height={{ base: "240px", md: "320px" }}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <div className="">
+                    <Text className="font-medium text-[18px] mb-5">
+                      Upload Cover Image
+                    </Text>
+                    <input
+                      onChange={handleImageChange}
+                      accept=".jpg, .png, .gif, .jpeg"
+                      type="file"
+                      className="flex justify-center w-[220px]"
+                      placeholder="choose"
+                    ></input>
+                  </div>
+                )}
+              </div>
+            </>
             <Button
               mt="20px"
               rightIcon={<ArrowForwardIcon />}
